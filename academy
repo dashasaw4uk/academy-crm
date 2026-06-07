@@ -4,147 +4,34 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Академія Руху CRM</title>
-
 <style>
-body{
-  font-family:Arial;
-  margin:0;
-  background:#f4f6f8;
-  color:#222;
-}
-
-/* HEADER */
-header{
-  background:#1f3b4d;
-  color:white;
-  padding:15px;
-  font-size:18px;
-  text-align:center;
-}
-
-/* LAYOUT */
-.container{
-  display:flex;
-  min-height:100vh;
-}
-
-/* SIDEBAR */
-nav{
-  width:220px;
-  background:#263845;
-  color:white;
-  padding:10px;
-}
-
-nav button{
-  width:100%;
-  margin:5px 0;
-  padding:12px;
-  border:none;
-  background:#34495e;
-  color:white;
-  cursor:pointer;
-  border-radius:6px;
-  font-size:14px;
-}
-
+body{font-family:Arial;margin:0;background:#f4f6f8;color:#222}
+header{background:#1f3b4d;color:white;padding:15px 20px;font-size:20px}
+.container{display:flex;min-height:100vh}
+nav{width:220px;background:#263845;color:white;padding:10px}
+nav button{width:100%;margin:5px 0;padding:10px;border:none;background:#34495e;color:white;cursor:pointer;border-radius:6px}
 nav button:hover{background:#3d5f77}
-
-/* MAIN */
-main{
-  flex:1;
-  padding:15px;
-}
-
-/* CARDS */
-.card{
-  background:white;
-  padding:15px;
-  border-radius:10px;
-  margin-bottom:15px;
-  box-shadow:0 2px 5px rgba(0,0,0,0.1);
-}
-
-/* INPUTS */
-input,select{
-  padding:10px;
-  margin:5px 0;
-  width:100%;
-  box-sizing:border-box;
-  font-size:14px;
-}
-
-/* ROW */
+main{flex:1;padding:20px}
+.card{background:white;padding:15px;border-radius:10px;margin-bottom:15px;box-shadow:0 2px 5px rgba(0,0,0,0.1)}
+input,select{padding:8px;margin:5px 0;width:100%}
 .row{display:flex;gap:10px}
 .row > div{flex:1}
-
-/* TABLE */
-table{
-  width:100%;
-  border-collapse:collapse;
-}
-
-th,td{
-  border:1px solid #ddd;
-  padding:8px;
-  text-align:left;
-  font-size:13px;
-}
-
-/* BUTTONS */
-button{
-  font-size:14px;
-}
-
-button.action{
-  padding:6px 8px;
-  font-size:12px;
-}
-
-/* MOBILE ADAPTATION */
-@media (max-width: 768px){
-
-  .container{
-    flex-direction:column;
-  }
-
-  nav{
-    width:100%;
-    display:flex;
-    overflow-x:auto;
-  }
-
-  nav button{
-    flex:1;
-    margin:5px;
-    white-space:nowrap;
-  }
-
-  main{
-    padding:10px;
-  }
-
-  header{
-    font-size:16px;
-  }
-
-  .card{
-    padding:12px;
-  }
-
-  th,td{
-    font-size:12px;
-  }
-}
+table{width:100%;border-collapse:collapse}
+th,td{border:1px solid #ddd;padding:8px;text-align:left;font-size:14px}
+th{background:#eee}
+button.action{padding:5px 8px;font-size:12px}
+.small{font-size:12px;color:#666}
+.badge{padding:3px 6px;border-radius:5px;color:white;font-size:11px}
+.red{background:#e74c3c}
+.green{background:#2ecc71}
+.orange{background:#f39c12}
 </style>
 </head>
-
 <body>
 
 <header>Академія Руху — CRM система</header>
 
 <div class="container">
-
 <nav>
 <button onclick="show('dashboard')">Головна</button>
 <button onclick="show('visitors')">Відвідувачі</button>
@@ -154,30 +41,24 @@ button.action{
 
 <main>
 
-<!-- DASHBOARD -->
 <div id="dashboard" class="view">
 <div class="card">
 <h2>Dashboard</h2>
 <div id="stats"></div>
 </div>
-
 <div class="card">
 <h3>Сьогодні відсутні</h3>
 <div id="todayAbsent"></div>
 </div>
-
 <div class="card">
-<h3>Нагадування</h3>
+<h3>Нагадування (завтра кінець заморозки)</h3>
 <div id="reminders"></div>
 </div>
 </div>
 
-<!-- VISITORS -->
 <div id="visitors" class="view" style="display:none">
-
 <div class="card">
 <h2>Додати відвідувача</h2>
-
 <input id="v_name" placeholder="Ім'я">
 <input id="v_surname" placeholder="Прізвище">
 
@@ -202,35 +83,29 @@ button.action{
 </div>
 
 <div class="card">
-<h2>Список</h2>
+<h2>Список відвідувачів</h2>
 <div id="visitorList"></div>
 </div>
 </div>
 
-<!-- TRAINERS -->
 <div id="trainers" class="view" style="display:none">
-
 <div class="card">
 <h2>Тренери</h2>
 <input id="t_name" placeholder="Ім'я тренера">
 <button onclick="addTrainer()">Додати</button>
 </div>
-
 <div class="card">
 <div id="trainerList"></div>
 </div>
 </div>
 
-<!-- CALENDAR -->
 <div id="calendar" class="view" style="display:none">
-
 <div class="card">
 <h2>Перевірка відсутніх</h2>
 <input type="date" id="checkDate">
 <button onclick="checkAbsent()">Показати</button>
 <div id="calendarResult"></div>
 </div>
-
 </div>
 
 </main>
@@ -263,31 +138,31 @@ renderAll();
 function renderTrainers(){
 let sel1=document.getElementById("v_trainer1");
 let sel2=document.getElementById("v_trainer2");
-
 sel1.innerHTML="<option>Різні</option>";
 sel2.innerHTML="<option>Різні</option>";
-
 trainers.forEach(t=>{
-sel1.innerHTML+=`<option>${t.name}</option>`;
-sel2.innerHTML+=`<option>${t.name}</option>`;
+sel1.innerHTML+=`<option value="${t.name}">${t.name}</option>`;
+sel2.innerHTML+=`<option value="${t.name}">${t.name}</option>`;
 });
-
-document.getElementById("trainerList").innerHTML =
-trainers.map(t=>`<div class="card">${t.name}</div>`).join("");
+let list=document.getElementById("trainerList");
+list.innerHTML=trainers.map(t=>`<div>${t.name}</div>`).join("");
 }
 
-function renderSchedule(){
-let days=["Пн","Вт","Ср","Чт","Пт","Сб","Нд"];
-let box=document.getElementById("scheduleBox");
-box.innerHTML="";
-
-days.forEach(d=>{
-box.innerHTML+=`
-<div>
-<label><input type="checkbox" class="sch" value="${d}"> ${d}</label>
-<input id="time_${d}" placeholder="час">
-</div>`;
-});
+function addVisitor(){
+let v={
+id:Date.now(),
+name:v_name.value,
+surname:v_surname.value,
+t1:v_trainer1.value,
+t2:v_trainer2.value,
+type:v_type.value,
+format:v_format.value,
+schedule:getSchedule(),
+freezes:[]
+};
+visitors.push(v);
+save();
+renderAll();
 }
 
 function getSchedule(){
@@ -300,38 +175,39 @@ arr.push({day:s.value,time:document.getElementById("time_"+s.value).value});
 return arr;
 }
 
-function addVisitor(){
-visitors.push({
-id:Date.now(),
-name:v_name.value,
-surname:v_surname.value,
-t1:v_trainer1.value,
-t2:v_trainer2.value,
-type:v_type.value,
-format:v_format.value,
-schedule:getSchedule(),
-freezes:[]
+function renderSchedule(){
+let days=["Пн","Вт","Ср","Чт","Пт","Сб","Нд"];
+let box=document.getElementById("scheduleBox");
+box.innerHTML="";
+days.forEach(d=>{
+box.innerHTML+=`
+<div>
+<label><input type="checkbox" class="sch" value="${d}"> ${d}</label>
+<input id="time_${d}" placeholder="час">
+</div>`;
 });
-save();
-renderAll();
 }
 
 function renderVisitors(){
-document.getElementById("visitorList").innerHTML =
-visitors.map(v=>`
-<div class="card">
+let list=document.getElementById("visitorList");
+list.innerHTML=visitors.map(v=>{
+return `<div class='card'>
 <b>${v.name} ${v.surname}</b><br>
+${v.t1||""} ${v.t2||""}<br>
 ${v.type} | ${v.format}<br>
 <button onclick="freeze(${v.id})">Заморозка</button>
-</div>
-`).join("");
+</div>`;
+}).join("");
 }
 
 function freeze(id){
-let from=prompt("З дати");
-let to=prompt("По дату");
+let from=prompt("З дати (YYYY-MM-DD)");
+let to=prompt("По дату (YYYY-MM-DD)");
 let v=visitors.find(x=>x.id==id);
-if(v){v.freezes.push({from,to});save();renderAll();}
+if(!v)return;
+v.freezes.push({from,to});
+save();
+renderAll();
 }
 
 function isFrozen(v,date){
@@ -340,19 +216,30 @@ return v.freezes.some(f=>date>=f.from && date<=f.to);
 
 function checkAbsent(){
 let d=document.getElementById("checkDate").value;
-document.getElementById("calendarResult").innerHTML =
-visitors.filter(v=>isFrozen(v,d))
-.map(v=>v.name+" "+v.surname).join("<br>");
+let res=document.getElementById("calendarResult");
+let list=visitors.filter(v=>isFrozen(v,d));
+res.innerHTML=list.map(v=>v.name+" "+v.surname).join("<br>");
 }
 
 function renderDashboard(){
 let today=new Date().toISOString().slice(0,10);
-document.getElementById("stats").innerHTML=
-`Відвідувачів: ${visitors.length}<br>Тренерів: ${trainers.length}`;
+let tomorrow=new Date(Date.now()+86400000).toISOString().slice(0,10);
 
-document.getElementById("todayAbsent").innerHTML =
-visitors.filter(v=>isFrozen(v,today))
-.map(v=>v.name+" "+v.surname).join("<br>");
+let todayAbsent=visitors.filter(v=>isFrozen(v,today));
+document.getElementById("todayAbsent").innerHTML=todayAbsent.map(v=>v.name+" "+v.surname).join("<br>");
+
+let reminders=[];
+visitors.forEach(v=>{
+v.freezes.forEach(f=>{
+if(f.to===tomorrow){
+reminders.push(v.name+" "+v.surname);
+}
+});
+});
+document.getElementById("reminders").innerHTML=reminders.join("<br>");
+
+document.getElementById("stats").innerHTML=
+"Відвідувачів: "+visitors.length+"<br>Тренерів: "+trainers.length;
 }
 
 function renderAll(){
