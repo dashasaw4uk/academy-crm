@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Академія Руху CRM</title>
+
+<style>
+body{
+  font-family:Arial;
+  margin:0;
+  background:#f4f6f8;
+  color:#222;
+}
+
+/* HEADER */
+header{
+  background:#1f3b4d;
+  color:white;
+  padding:15px;
+  font-size:18px;
+  text-align:center;
+}
+
+/* LAYOUT */
+.container{
+  display:flex;
+  min-height:100vh;
+}
+
+/* SIDEBAR */
+nav{
+  width:220px;
+  background:#263845;
+  color:white;
+  padding:10px;
+}
+
+nav button{
+  width:100%;
+  margin:5px 0;
+  padding:12px;
+  border:none;
+  background:#34495e;
+  color:white;
+  cursor:pointer;
+  border-radius:6px;
+  font-size:14px;
+}
+
+nav button:hover{background:#3d5f77}
+
+/* MAIN */
+main{
+  flex:1;
+  padding:15px;
+}
+
+/* CARDS */
+.card{
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  margin-bottom:15px;
+  box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* INPUTS */
+input,select{
+  padding:10px;
+  margin:5px 0;
+  width:100%;
+  box-sizing:border-box;
+  font-size:14px;
+}
+
+/* ROW */
+.row{display:flex;gap:10px}
+.row > div{flex:1}
+
+/* TABLE */
+table{
+  width:100%;
+  border-collapse:collapse;
+}
+
+th,td{
+  border:1px solid #ddd;
+  padding:8px;
+  text-align:left;
+  font-size:13px;
+}
+
+/* BUTTONS */
+button{
+  font-size:14px;
+}
+
+button.action{
+  padding:6px 8px;
+  font-size:12px;
+}
+
+/* MOBILE ADAPTATION */
+@media (max-width: 768px){
+
+  .container{
+    flex-direction:column;
+  }
+
+  nav{
+    width:100%;
+    display:flex;
+    overflow-x:auto;
+  }
+
+  nav button{
+    flex:1;
+    margin:5px;
+    white-space:nowrap;
+  }
+
+  main{
+    padding:10px;
+  }
+
+  header{
+    font-size:16px;
+  }
+
+  .card{
+    padding:12px;
+  }
+
+  th,td{
+    font-size:12px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>Академія Руху — CRM система</header>
+
+<div class="container">
+
+<nav>
+<button onclick="show('dashboard')">Головна</button>
+<button onclick="show('visitors')">Відвідувачі</button>
+<button onclick="show('trainers')">Тренери</button>
+<button onclick="show('calendar')">Календар</button>
+</nav>
+
+<main>
+
+<!-- DASHBOARD -->
+<div id="dashboard" class="view">
+<div class="card">
+<h2>Dashboard</h2>
+<div id="stats"></div>
+</div>
+
+<div class="card">
+<h3>Сьогодні відсутні</h3>
+<div id="todayAbsent"></div>
+</div>
+
+<div class="card">
+<h3>Нагадування</h3>
+<div id="reminders"></div>
+</div>
+</div>
+
+<!-- VISITORS -->
+<div id="visitors" class="view" style="display:none">
+
+<div class="card">
+<h2>Додати відвідувача</h2>
+
+<input id="v_name" placeholder="Ім'я">
+<input id="v_surname" placeholder="Прізвище">
+
+<select id="v_trainer1"></select>
+<select id="v_trainer2"></select>
+
+<select id="v_type">
+<option>Шрот-терапія</option>
+<option>Функціональні</option>
+</select>
+
+<select id="v_format">
+<option>Групове</option>
+<option>Індивідуальне</option>
+<option>Змішане</option>
+</select>
+
+<h4>Графік</h4>
+<div id="scheduleBox"></div>
+
+<button onclick="addVisitor()">Додати</button>
+</div>
+
+<div class="card">
+<h2>Список</h2>
+<div id="visitorList"></div>
+</div>
+</div>
+
+<!-- TRAINERS -->
+<div id="trainers" class="view" style="display:none">
+
+<div class="card">
+<h2>Тренери</h2>
+<input id="t_name" placeholder="Ім'я тренера">
+<button onclick="addTrainer()">Додати</button>
+</div>
+
+<div class="card">
+<div id="trainerList"></div>
+</div>
+</div>
+
+<!-- CALENDAR -->
+<div id="calendar" class="view" style="display:none">
+
+<div class="card">
+<h2>Перевірка відсутніх</h2>
+<input type="date" id="checkDate">
+<button onclick="checkAbsent()">Показати</button>
+<div id="calendarResult"></div>
+</div>
+
+</div>
+
+</main>
+</div>
+
+<script>
+let visitors = JSON.parse(localStorage.getItem("visitors")||"[]");
+let trainers = JSON.parse(localStorage.getItem("trainers")||"[]");
+
+function save(){
+localStorage.setItem("visitors",JSON.stringify(visitors));
+localStorage.setItem("trainers",JSON.stringify(trainers));
+}
+
+function show(v){
+document.querySelectorAll(".view").forEach(x=>x.style.display="none");
+document.getElementById(v).style.display="block";
+renderAll();
+}
+
+function addTrainer(){
+let n=document.getElementById("t_name").value;
+if(!n)return;
+trainers.push({id:Date.now(),name:n});
+document.getElementById("t_name").value="";
+save();
+renderAll();
+}
+
+function renderTrainers(){
+let sel1=document.getElementById("v_trainer1");
+let sel2=document.getElementById("v_trainer2");
+
+sel1.innerHTML="<option>Різні</option>";
+sel2.innerHTML="<option>Різні</option>";
+
+trainers.forEach(t=>{
+sel1.innerHTML+=`<option>${t.name}</option>`;
+sel2.innerHTML+=`<option>${t.name}</option>`;
+});
+
+document.getElementById("trainerList").innerHTML =
+trainers.map(t=>`<div class="card">${t.name}</div>`).join("");
+}
+
+function renderSchedule(){
+let days=["Пн","Вт","Ср","Чт","Пт","Сб","Нд"];
+let box=document.getElementById("scheduleBox");
+box.innerHTML="";
+
+days.forEach(d=>{
+box.innerHTML+=`
+<div>
+<label><input type="checkbox" class="sch" value="${d}"> ${d}</label>
+<input id="time_${d}" placeholder="час">
+</div>`;
+});
+}
+
+function getSchedule(){
+let arr=[];
+document.querySelectorAll(".sch").forEach(s=>{
+if(s.checked){
+arr.push({day:s.value,time:document.getElementById("time_"+s.value).value});
+}
+});
+return arr;
+}
+
+function addVisitor(){
+visitors.push({
+id:Date.now(),
+name:v_name.value,
+surname:v_surname.value,
+t1:v_trainer1.value,
+t2:v_trainer2.value,
+type:v_type.value,
+format:v_format.value,
+schedule:getSchedule(),
+freezes:[]
+});
+save();
+renderAll();
+}
+
+function renderVisitors(){
+document.getElementById("visitorList").innerHTML =
+visitors.map(v=>`
+<div class="card">
+<b>${v.name} ${v.surname}</b><br>
+${v.type} | ${v.format}<br>
+<button onclick="freeze(${v.id})">Заморозка</button>
+</div>
+`).join("");
+}
+
+function freeze(id){
+let from=prompt("З дати");
+let to=prompt("По дату");
+let v=visitors.find(x=>x.id==id);
+if(v){v.freezes.push({from,to});save();renderAll();}
+}
+
+function isFrozen(v,date){
+return v.freezes.some(f=>date>=f.from && date<=f.to);
+}
+
+function checkAbsent(){
+let d=document.getElementById("checkDate").value;
+document.getElementById("calendarResult").innerHTML =
+visitors.filter(v=>isFrozen(v,d))
+.map(v=>v.name+" "+v.surname).join("<br>");
+}
+
+function renderDashboard(){
+let today=new Date().toISOString().slice(0,10);
+document.getElementById("stats").innerHTML=
+`Відвідувачів: ${visitors.length}<br>Тренерів: ${trainers.length}`;
+
+document.getElementById("todayAbsent").innerHTML =
+visitors.filter(v=>isFrozen(v,today))
+.map(v=>v.name+" "+v.surname).join("<br>");
+}
+
+function renderAll(){
+renderTrainers();
+renderSchedule();
+renderVisitors();
+renderDashboard();
+}
+
+renderAll();
+</script>
+
+</body>
+</html>
